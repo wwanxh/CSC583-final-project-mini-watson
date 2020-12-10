@@ -8,9 +8,7 @@ public class StanfordCoreNLPManager {
 
     public static StanfordCoreNLP buildPipeline(){
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
-//        props.setProperty("annotators", "tokenize,ssplit,pos,lemma,stopword");
-//        props.setProperty("customAnnotatorClass.stopword", "intoxicant.analytics.corenlp.StopwordAnnotator");
+        props.setProperty("annotators", "tokenize,cleanxml,ssplit,pos,lemma");
         return new StanfordCoreNLP(props);
     }
 

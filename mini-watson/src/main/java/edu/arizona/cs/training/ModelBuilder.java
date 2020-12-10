@@ -40,7 +40,7 @@ public class ModelBuilder {
             for(PageItem page : pages){
                 addDoc(w, page);
                 cnt ++;
-                int cur_progress = (int) ((double) cnt / (double) pages.size()) * 100;
+                int cur_progress = (int) ((double) cnt / (double) pages.size() * 100);
                 if(progress!=cur_progress){
                     System.out.println("\t%% Finished " + cur_progress + "%...");
                     progress = cur_progress;

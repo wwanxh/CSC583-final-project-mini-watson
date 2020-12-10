@@ -3,14 +3,11 @@ package edu.arizona.cs.parser;
 import edu.arizona.cs.Preferences;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
 public class DataSetParser {
@@ -33,7 +30,8 @@ public class DataSetParser {
                         continue;
                     } else if ((titleMatcher = Preferences.PAGE_TITLE_MATCHER.matcher(line)).matches()) {
                         if(page != null) {
-                            page.getSubtitles().put(subtitle, temp.toString());
+                            String trimmedStr = RemoveSpecialCharacters(temp.toString());
+                            page.getSubtitles().put(subtitle, RemoveSpecialCharacters(subtitle.toLowerCase()) + " " + trimmedStr);
                             res.add(page);
                         }
                         page = new PageItem();
@@ -45,7 +43,7 @@ public class DataSetParser {
                         subtitle = substitleMatcher.toMatchResult().group().replace('=', ' ').trim();
                         temp = new StringBuilder();
                     } else {
-                        temp.append(line);
+                        temp.append(RemoveSpecialCharacters(line));
                         temp.append(" ");
                     }
 
@@ -58,6 +56,22 @@ public class DataSetParser {
         }
         System.out.println("---------- Wiki Pages are loaded! ----------");
         runLemmatization(res);
+        return res;
+    }
+
+    private static String RemoveSpecialCharacters(String str){
+        String res = str.replaceAll("\n", " ")
+                .replaceAll("\\[\\s*tpl\\s*\\]", " ")
+                .replaceAll("\\[\\s*/\\s*tpl\\s*\\]", " ")
+                .replaceAll(Preferences.URL_DETECTOR_REGEX, "")
+                .replaceAll("[^ a-zA-Z\\d]", " ")
+//                .replaceAll("redirect http", " ")
+//                .replaceAll("redirect apache http server"," ")
+//                .replaceAll("redirect http cookie privacy and third party cookies", " ")
+//                .replaceAll("redirect", " ")
+//                .replaceAll(Preferences.PUNCT_DETECTOR_REGEX, " ")
+//                .replaceAll(Preferences.NON_ASCII_DETECTOR_REGEX, "")
+                .toLowerCase().trim();
         return res;
     }
 
